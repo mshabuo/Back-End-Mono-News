@@ -33,8 +33,9 @@ it('responds with 404 error if not path is found', ()=>{
 });
   })
   describe('/api/articles/:article_id', ()=>{
-    test('responds with an article object', ()=>{
+    test('responds with an article object of article id 1', ()=>{
       return request(app).get('/api/articles/1').expect(200).then((response)=>{
+        console.log(response.body.article, '<-----jest')
          expect(response.body.article).toHaveLength(1)
         response.body.article.forEach((article) =>{
           expect(article).toEqual(
@@ -53,6 +54,11 @@ it('responds with 404 error if not path is found', ()=>{
     test('responds with 400 for bad requests', ()=>{
       return request(app).get('/api/articles/adam').expect(400).then(({body: {msg}})=>{
         expect(msg).toBe("bad request")
+      })
+    });
+    test('responds with 404 when id currently does not exist in the database', () =>{
+      return request(app).get('/api/articles/6000').expect(404).then(({body: {msg}})=> {
+        expect(msg).toBe("article id not found")
       })
     })
   })
