@@ -28,7 +28,7 @@ describe('GET', ()=>{
 });
 describe('/api/topicss', () =>{
   it('responds with 404 error if not path is found', ()=>{
-    return request(app).get('/api/topicss').expect(404)
+    return request(app).get('/api/no-valid-path').expect(404)
     .then(({body: {msg}}) => {
       expect(msg).toBe("opps, path not found")
     })
