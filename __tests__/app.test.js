@@ -9,7 +9,7 @@ afterAll(()=> db.end())
 beforeEach(()=> (seed(data)))
 
 
-describe('GET', ()=>{
+describe('GET', ()=> {
         describe('/api/topics', ()=>{
             it('responds with array of topic objects', () => {
             return request(app).get('/api/topics').expect(200).then((response) =>{
