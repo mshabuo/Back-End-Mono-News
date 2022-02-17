@@ -1,17 +1,18 @@
-const { selectTopic, selectArticleById, updateArticleById, selectUsers } = require("../models/ncnews_models")
+const { response } = require("express")
+const { selectTopic, selectArticleById, updateArticleById, selectUsers, getArticleByQuery, selectCommentsByArticleId } = require("../models/ncnews_models")
 
 
 exports.fetchUsers = (request, response, next) => {
 selectUsers().then((users)=>{
     response.status(200).send({users})
 })
-.catch(next)
+.catch((err) => next(err))
 }
 exports.fetchTopic = (request, response, next) => {
     selectTopic().then((data) => {
     response.status(200).send({data})
 })
-.catch(next)
+.catch((err) => next(err))
 }
 
 exports.getArticleById = (request, response, next) =>{
@@ -19,20 +20,43 @@ exports.getArticleById = (request, response, next) =>{
 selectArticleById(articleId).then((article)=>{
     response.status(200).send({article})
 })
-.catch(next)
+.catch((err) => next(err))
 }
 
 exports.patchArticle = (request, response, next) => {
-// access user articleId and request body
+
 const {article_id: articleId} = request.params;
 const vote = request.body;
-// invoke model function with articleId and requestBody
+
 updateArticleById(articleId, vote).then((article)=>{
-//respond back to client with updated article 
+
     response.status(201).send({article:article })
 })
-.catch(next)
+.catch((err)=> next(err))
 }
 
+exports.fetchCommentsByArticleId = (req, res, next) => {
+  const id = req.params.article_id;
+  selectCommentsByArticleId(id)
+    .then((comments) => {
+      if (comments.length > 0) {
+        res.status(200).send(comments);
+      } else {
+        return Promise.reject({ status: 404, msg: "comments not found" });
+      }
+    })
+    .catch((err) => next(err));
+};
 
+
+exports.queryArticle = (request, response, next) => {
+    const {sort_by, order} = request.query;
+if(!sort_by || !order) {
+    return Promise.reject({status:400, msg: "bad request"})
+} else {
+getArticleByQuery(sort_by, order).then((articles)=>{
+    response.status(200).send({articles})
+})
+.catch((err)= next(err))
+}}
 

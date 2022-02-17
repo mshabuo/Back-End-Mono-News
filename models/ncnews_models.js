@@ -1,15 +1,13 @@
-const {fetchTopic, patchArticle} = require("../controllers/ncnews_controllers")
 const db = require("../db/connection")
-
+const format = require('pg-format')
 
 exports.selectTopic = async () => {
     const data = await db.query('SELECT * FROM topics;')
-    // console.log(data)
     return data.rows
 }
 
 exports.selectArticleById = async (articleId) => {
-const articleData = await db.query('SELECT * FROM articles WHERE article_id = $1;', [articleId])
+const articleData = await db.query('SELECT articles.*, COUNT(comments.comment_id) AS comment_count FROM articles JOIN comments ON articles.article_id = comments.article_id WHERE articles.article_id = $1 GROUP BY articles.article_id;', [articleId])
 if(articleData.rows.length === 0){
 return Promise.reject({status: 404, msg: "article id not found"})
 } 
@@ -31,3 +29,20 @@ exports.selectUsers = async () => {
     return usersArr.rows
 }
 
+
+exports.selectCommentsByArticleId = async (id) => {
+
+    const commentsArr = await db.query('SELECT comments.* FROM comments WHERE article_id = $1;', [id])
+    
+return commentsArr.rows
+}
+
+exports.getArticleByQuery = async (sort_by, order) => {
+
+    let sqlStr = `SELECT articles.* FROM articles GROUP BY articles.article_id ORDER BY %I %s;`
+    let queryVal = [[sort_by], [order]]
+    const articleData = format(sqlStr, ...queryVal)
+    return db.query(articleData).then((article)=>{
+        return article.rows
+    })
+}
