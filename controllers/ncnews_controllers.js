@@ -1,4 +1,4 @@
-const { selectTopic, selectArticleById } = require("../models/ncnews_models")
+const { selectTopic, selectArticleById, postComment } = require("../models/ncnews_models")
 
 
 
@@ -8,6 +8,15 @@ exports.fetchTopic = (request, response, next) => {
     response.status(200).send({data})
 })
 .catch(next)
+}
+
+exports.postCommentByArticleId = (request, response, next) => {
+    const id = request.params.article_id
+    const {username, body} = request.body
+    postComment(id, username, body).then((comment) => {
+        response.status(201).send({comment: comment})
+    })
+    .catch(next)
 }
 
 exports.getArticleById = (request, response, next) =>{
