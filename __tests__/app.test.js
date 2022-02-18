@@ -10,10 +10,10 @@ beforeEach(()=> (seed(data)))
 
 
 describe('GET', ()=> {
+  // tests topics end-point - fetch topic
         describe('/api/topics', ()=>{
-            it('responds with array of topic objects', () => {
+            test('responds with array of topic objects', () => {
             return request(app).get('/api/topics').expect(200).then((response) =>{
-              
               expect(response.body.data).toHaveLength(3)
                 response.body.data.forEach((topic) =>{
                   expect(topic).toEqual(
@@ -24,13 +24,15 @@ describe('GET', ()=> {
             })            
 })
 })
-it('responds with 404 error if not path is found', ()=>{
+// tests error response for invalid path
+test('responds with 404 error if not path is found', ()=>{
     return request(app).get('/api/no-valid-path').expect(404)
     .then(({body: {msg}}) => {
       expect(msg).toBe("opps, path not found")
     })
 });
   })
+// tests GET request for articles end-points, fetch article by article_id
   describe('/api/articles/:article_id', ()=>{
     test('responds with an article object of article id 1', ()=>{
       return request(app).get('/api/articles/1').expect(200).then((response)=>{
@@ -49,11 +51,13 @@ it('responds with 404 error if not path is found', ()=>{
         })
       })
     })
+    // tests error response for bad request
     test('responds with 400 for bad requests', ()=>{
       return request(app).get('/api/articles/adam').expect(400).then(({body: {msg}})=>{
         expect(msg).toBe("bad request")
       })
     });
+    // tests error response when id is not valid
     test('responds with 404 when id currently does not exist in the database', () =>{
       return request(app).get('/api/articles/6000').expect(404).then(({body: {msg}})=> {
         expect(msg).toBe("article id not found")
@@ -61,14 +65,15 @@ it('responds with 404 error if not path is found', ()=>{
     })
   })
 })
+
+// tests PATCH request for articles end-point, fetching articles by article_id
 describe('PATCH', () =>{
   describe('PATCH /api/articles/:article_id', ()=>{
     test('increment article#2 vote by 1 and responds with an updated article', () =>{
-      const output = {
+      const incrementVote = {
         votes: 1
       }
-      const updatedObj = {
-
+      const testOutput = {
     article_id: 2,      
     title: "Sony Vaio; or, The Laptop",
     topic: "mitch",
@@ -77,12 +82,59 @@ describe('PATCH', () =>{
     created_at: '2020-10-16T05:03:00.000Z',
     votes: 1
       }
-      return request(app).patch('/api/articles/2').send(output).expect(201).then((response) => {
-        expect(response.body.article).toEqual(updatedObj)
+      return request(app).patch('/api/articles/2').send(incrementVote).expect(201).then((response) => {
+        expect(response.body.article).toEqual(testOutput)
         })
       }) 
+// testing articles with more than 0 votes can be incremented
+       test('increment article#1 vote by 20 and responds with an updated article', () =>{
+      const incrementVote = {
+        votes: 20
+      }
+      const testOutput = {
+    article_id: 1,
+          title: "Living in the shadow of a great man",
+    topic: "mitch",
+    author: "butter_bridge",
+    body: "I find this existence challenging",
+    created_at: '2020-07-09T20:11:00.000Z',
+    votes: 120
+      }
+      return request(app).patch('/api/articles/1').send(incrementVote).expect(201).then((response) => {
+        expect(response.body.article).toEqual(testOutput)
+        })
+      }) 
+// testing article votes can be decremented
+      test('decrement article#1 by 10 and respond with updated article', ()=>{
+        const decrementVote = {
+          votes: -10
+        }
+        const testOutput = {
+          article_id: 1,
+          title: "Living in the shadow of a great man",
+    topic: "mitch",
+    author: "butter_bridge",
+    body: "I find this existence challenging",
+    created_at: '2020-07-09T20:11:00.000Z',
+    votes: 90
+        }
+        return request(app).patch('/api/articles/1').send(decrementVote).expect(201).then((response)=>{
+          expect(response.body.article).toEqual(testOutput)
+        })
+      })
+// testing value data type is valid input
+      test('check all values are valid and responds with status 400 if invalid', ()=>{
+        const invalidValue = {
+          votes: 'not valid'
+        }
+        return request(app).patch('/api/articles/1').send(invalidValue).expect(400).then(({body: {msg}})=>{
+          expect(msg).toBe('bad request')
+        })
+      })
     })
   })
+
+// tests GET request for users end-point to fetch users table
 describe('GET ', ()=>{
   describe('GET users table', ()=>{
     test('responds with an array of objects for all users in the table', ()=>{
@@ -98,6 +150,7 @@ describe('GET ', ()=>{
         })
       })
     })
+// tests error response where path provided is not valid
     test('responds with 404 error if path not found', ()=>{
     return request(app).get('/api/no-valid-path').expect(404)
     .then(({body: {msg}}) => {
@@ -107,17 +160,7 @@ describe('GET ', ()=>{
   })
 })
 
-describe('GET/api/articles?query', () => {
-  test("responds with status 200 & article from query", () => {
-    return request(app)
-      .get("/api/articles?sort_by=title&&order=ASC")
-      .expect(200)
-      .then((response) => {
-        expect(response.body.articles).toBeSortedBy("title");
-      });
-  });
-});
-
+// tests GET request for articles end-point, get comments by article_id
 describe("/api/:article_id/comments", () => {
   test("responds with status 200 and comments of the article id", () => {
     return request(app)
@@ -128,6 +171,7 @@ describe("/api/:article_id/comments", () => {
         expect(res.body).toHaveLength(2);
       });
   });
+  //tests error response where article_id doesn't exist
   test("responds with 404 if no comment found", () => {
     return request(app)
     .get("/api/articles/60/comments")

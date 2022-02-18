@@ -37,12 +37,4 @@ exports.selectCommentsByArticleId = async (id) => {
 return commentsArr.rows
 }
 
-exports.getArticleByQuery = async (sort_by, order) => {
 
-    let sqlStr = `SELECT articles.* FROM articles GROUP BY articles.article_id ORDER BY %I %s;`
-    let queryVal = [[sort_by], [order]]
-    const articleData = format(sqlStr, ...queryVal)
-    return db.query(articleData).then((article)=>{
-        return article.rows
-    })
-}

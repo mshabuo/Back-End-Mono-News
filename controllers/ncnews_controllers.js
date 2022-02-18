@@ -49,14 +49,5 @@ exports.fetchCommentsByArticleId = (req, res, next) => {
 };
 
 
-exports.queryArticle = (request, response, next) => {
-    const {sort_by, order} = request.query;
-if(!sort_by || !order) {
-    return Promise.reject({status:400, msg: "bad request"})
-} else {
-getArticleByQuery(sort_by, order).then((articles)=>{
-    response.status(200).send({articles})
-})
-.catch((err)= next(err))
-}}
+
 
