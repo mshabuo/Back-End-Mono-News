@@ -1,5 +1,5 @@
 const db = require("../db/connection")
-const format = require('pg-format')
+
 
 
 exports.insertArticle = async (author, title, body, topic) => {

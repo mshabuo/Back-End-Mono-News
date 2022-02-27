@@ -1,5 +1,5 @@
 const db = require("../db/connection")
-const format = require('pg-format')
+
 
 
 exports.removeCommentById = async (id) => {
@@ -26,9 +26,7 @@ exports.postComment = async (slug, description) => {
   let sqlStr = `INSERT INTO topics (slug, description)
                   VALUES (%L, %L) RETURNING *;`;
 
-  const queryStr = format(sqlStr, ...queryValues);
-
-  return db.query(queryStr).then((results) => {
+  return db.query(queryStr,queryValues).then((results) => {
     return results.rows[0];
   });
 };
