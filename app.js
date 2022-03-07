@@ -1,5 +1,7 @@
+const cors = require ('cors');
 const express = require ('express');
 const app = express();
+app.use(cors());
 const {getArticleById, patchArticle, queryArticle, postArticle} = require("./controllers/articles.controller")
 const {deleteComment, postCommentByArticleId, fetchCommentsByArticleId} = require("./controllers/comments.controller")
 const {fetchTopic} = require("./controllers/topics.controller")
