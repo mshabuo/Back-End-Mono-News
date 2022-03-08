@@ -58,23 +58,26 @@ if (!['asc', 'desc'].includes(order)) {
   return Promise.reject({ status: 400, msg: 'Invalid order query' });
 }
 let topicValues = [];
-let where = '';
+let queryTopic = '';
 
 if (topic){
-    where = `WHERE articles.topic = $1`
+    queryTopic = `WHERE articles.topic = $1`
     topicValues.push(topic)
 }
 
-    let sqlStr = `SELECT articles.* FROM articles GROUP BY articles.article_id ORDER BY ${sort_by} ${order};`
-   
-    
-    return db.query(sqlStr, topicValues).then(({rows})=>{
-        if (rows.length === 0) {
-  return Promise.reject({ status: 404, msg: 'topic not found' });
-}
-    return rows
-    })
-}
+return db
+    .query(
+      `SELECT articles.*, COUNT(comment_id)::INT AS comment_count FROM articles
+  LEFT JOIN comments
+  ON comments.article_id = articles.article_id ${queryTopic} GROUP BY articles.article_id
+  ORDER BY ${sort_by} ${order};`,topicValues)
+    .then(({ rows }) => {
+      if (rows.length < 1) {
+        return Promise.reject({ status: 404, msg: `Topic not found` });
+      }
+      return rows;
+    });
+};
 
 exports.updateArticleById = async (articleId, vote) => {
     const voteVal = vote.votes;

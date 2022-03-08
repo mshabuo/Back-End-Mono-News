@@ -6,7 +6,7 @@ const db = require("../db/connection")
 
 afterAll(()=> db.end())
 
-beforeEach(()=> (seed(data)))
+beforeEach(()=> (seed(data)));
 
 
 describe('GET', ()=> {
