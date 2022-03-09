@@ -39,45 +39,45 @@ exports.insertCommentByArticleId = (article_id, username, body) => {
   });
 };
 
-exports.getArticleByQuery = async (sort_by = 'created_at', order = 'desc', topic) => {
-    const validColumns = [
-        'title',
-    'topic',
-    'author',
-    'body',
-    'created_at',
-    'votes',
-    ];
+exports.getArticleByQuery = (sort_by = "created_at", order = "desc", topic) => {
+  const queryValues = []
+  let validColumns = [
+    "title",
+    "topic",
+    "article_id",
+    "author",
+    "body",
+    "created_at",
+    "votes",
+  ];
 
-    // `sort_by` & `order` queries from client request
-if (!validColumns.includes(sort_by)) {
-  return Promise.reject({ status: 400, msg: 'Invalid sort query' });
-}
+  if (!validColumns.includes(sort_by)) {
+    return Promise.reject({ status: 400, msg: 'Invalid sort query' });
+  }
 
-if (!['asc', 'desc'].includes(order)) {
-  return Promise.reject({ status: 400, msg: 'Invalid order query' });
-}
-let topicValues = [];
-let queryTopic = '';
+  if (!['asc', 'desc'].includes(order)) {
+    return Promise.reject({ status: 400, msg: 'Invalid order query' });
+  }
+  let topicQuery = "";
 
-if (topic){
-    queryTopic = `WHERE articles.topic = $1`
-    topicValues.push(topic)
-}
-
-return db
+  if (topic) {
+    topicQuery = `WHERE articles.topic = $1`;
+    queryValues.push(topic)
+  }
+  return db
     .query(
       `SELECT articles.*, COUNT(comment_id)::INT AS comment_count FROM articles
   LEFT JOIN comments
-  ON comments.article_id = articles.article_id ${queryTopic} GROUP BY articles.article_id
-  ORDER BY ${sort_by} ${order};`,topicValues)
+  ON comments.article_id = articles.article_id ${topicQuery} GROUP BY articles.article_id
+  ORDER BY ${sort_by} ${order};`,queryValues)
+
     .then(({ rows }) => {
       if (rows.length < 1) {
         return Promise.reject({ status: 404, msg: `Topic not found` });
       }
       return rows;
-    });
-};
+}
+)}
 
 exports.updateArticleById = async (articleId, vote) => {
     const voteVal = vote.votes;

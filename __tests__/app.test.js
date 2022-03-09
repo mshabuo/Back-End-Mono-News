@@ -226,6 +226,31 @@ test("respond with status 200 & and articles sorted by topic in descending order
         })
       })
     })
+test.only("respond with status 200 & and articles sorted by topic in descending order", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then((res) => {
+        console.log(res)
+        expect(res.body.articles).toHaveLength(11);
+        expect(res.body.articles).toBeSortedBy("created_at", {
+          descending: true,
+        });
+        res.body.articles.forEach((article)=>{
+          expect(article.topic).toBe("mitch")
+          expect(article).toEqual(
+            expect.objectContaining({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number)
+            })
+          );
+        });
+      });
+    })
     });
 
 test("respond with status 200 & and articles sorted by created_at in descending order", () => {
