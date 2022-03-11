@@ -7,9 +7,11 @@ const {deleteComment, postCommentByArticleId, fetchCommentsByArticleId} = requir
 const {fetchTopic} = require("./controllers/topics.controller")
 const {fetchUsers} = require("./controllers/users.controllers")
 const {errorHandler400, errorCustomerHandler, handlePsqlErrors } = require('./errors')
+const {fetchJSON} = require("./controllers/app.controller")
 
 app.use(express.json());
 
+app.get('/api', fetchJSON)
 app.get('/api/topics', fetchTopic)
 app.get('/api/articles/:article_id', getArticleById)
 app.patch('/api/articles/:article_id', patchArticle)
@@ -17,8 +19,10 @@ app.get('/api/users', fetchUsers)
 app.get('/api/articles/:article_id/comments', fetchCommentsByArticleId)
 app.get('/api/articles', queryArticle)
 app.delete('/api/comments/:comment_id', deleteComment)
-app.post('/api/articles/:article_id/comments', postCommentByArticleId)
 app.post('/api/articles', postArticle)
+app.post('/api/articles/:article_id/comments', postCommentByArticleId)
+
+
 
 app.all("/*", (req, res)=>{
     res.status(404).send({msg: 'opps, path not found'})

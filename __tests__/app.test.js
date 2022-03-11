@@ -9,6 +9,7 @@ afterAll(()=> db.end())
 beforeEach(()=> (seed(data)));
 
 
+
 describe('GET', ()=> {
   
         describe('/api/topics', ()=>{
@@ -226,12 +227,11 @@ test("respond with status 200 & and articles sorted by topic in descending order
         })
       })
     })
-test.only("respond with status 200 & and articles sorted by topic in descending order", () => {
+test("respond with status 200 & and articles sorted by topic in descending order", () => {
     return request(app)
       .get("/api/articles?topic=mitch")
       .expect(200)
       .then((res) => {
-        console.log(res)
         expect(res.body.articles).toHaveLength(11);
         expect(res.body.articles).toBeSortedBy("created_at", {
           descending: true,
@@ -296,32 +296,24 @@ const testOutput = {
    })
   });
 
-describe("/api/articles", () => {
-  test("POST status 201 and return new article", () => {
-    const newArticle = {
-      author: "butter_bridge",
-      title: "Test article by Lurker",
-      body: "test body article",
-      topic: "mitch",
-    };
-
-    const expectedArticle = {
-      article_id: 13,
-      title: 'Test article by Lurker',
-      topic: 'mitch',
-      author: 'butter_bridge',
-      body: 'test body article',
-      created_at: expect.any(String),
-      votes: 0,
-    }
-    return request(app)
-      .post("/api/articles")
-      .send(newArticle)
-      .expect(201)
-      .then((res) => {
-        expect(res.body.article).toEqual(expectedArticle);
-      }) 
-  });
+describe("POST/api/articles/:article_id/comments", () => {
+    test('post new comment with correct article_id', () => {
+      return request(app)
+        .post('/api/articles/1/comments')
+        .send({ username: 'butter_bridge', body: 'test body' })
+        .expect(201)
+        .then(({body: {comment}}) => {
+          expect(comment).toEqual({
+            author: 'butter_bridge',
+            body: 'test body',
+            votes: 0,
+            article_id: 1,
+            created_at: expect.any(String),
+            comment_id: 19,
+          });
+        });
+    });
+  
 
   test("POST 400 status for missing title field", () => {
     const newArticle = {
@@ -338,6 +330,7 @@ describe("/api/articles", () => {
         expect(res.body.msg).toBe("Bad Request");
       });
     })
+  
   
   test("POST status 400 for invalid input type", () => {
     const newArticle = {
@@ -415,3 +408,5 @@ describe("/api/comments/:comment_id", () => {
       });
   });
 });
+
+

@@ -26,12 +26,8 @@ exports.postArticle = (req, res, next) => {
 
 exports.queryArticle = (req, res, next) => {
   const{sort_by,order,topic} = req.query;
-  console.log("controller sort_by",sort_by)
-  console.log("controller topic", topic)
-
   getArticleByQuery(sort_by,order,topic)
     .then((articles) => {
-      console.log("res section",articles)
       res.status(200).send({ articles });
     })
     .catch(next);

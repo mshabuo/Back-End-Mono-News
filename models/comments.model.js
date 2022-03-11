@@ -13,20 +13,14 @@ exports.selectCommentsByArticleId = async (id) => {
     
 return commentsArr.rows
 }
-
-exports.postComment = async (slug, description) => {
-  if (!slug || !description) {
-    return Promise.reject({ status: 400, msg: "Bad Request" });
-  }
-  if (typeof slug !== "string" || typeof description !== "string") {
-    return Promise.reject({ status: 400, msg: "Bad Request" });
-  }
-
-  let queryValues = [slug, description];
-  let sqlStr = `INSERT INTO topics (slug, description)
-                  VALUES (%L, %L) RETURNING *;`;
-
-  return db.query(queryStr,queryValues).then((results) => {
-    return results.rows[0];
-  });
+exports.postComment = async (article_id, reqBody) => {
+  const username = reqBody.username;
+  const body = reqBody.body;
+ 
+    const newComment = await  db.query(
+      'INSERT INTO comments (author,body,article_id) VALUES($1,$2,$3) RETURNING *;',[username, body, article_id]
+    )
+    console.log(newComment.rows[0])
+  return newComment.rows[0]
 };
+

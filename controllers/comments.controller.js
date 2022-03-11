@@ -25,11 +25,11 @@ exports.fetchCommentsByArticleId = (req, res, next) => {
     .catch((err) => next(err));
 };
 
-exports.postCommentByArticleId = (req, response, next) => {
-  const { slug, description } = request.body;
-  postComment(slug, description)
-    .then((topic) => {
-      return res.status(201).send({ topic });
+exports.postCommentByArticleId = (req, res, next) => {
+  const { article_id } = req.params;
+  postComment(article_id, req.body).then((comment) => {
+      console.log("controller", comment)
+      return res.status(201).send({comment});
     })
     .catch((err) => next(err));
 };

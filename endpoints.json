@@ -1,6 +1,6 @@
 {
   "GET /api": {
-    "description": "serves up a json representation of all the available endpoints of the api"
+    "description": "serves up a JSON representation of all the available endpoints of the api"
   },
   "GET /api/topics": {
     "description": "serves an array of all topics",
@@ -10,8 +10,24 @@
     }
   },
   "GET /api/articles": {
-    "description": "serves an array of all topics",
-    "queries": ["author", "topic", "sort_by", "order"],
+    "description": "serves an array of all articles",
+    "queries": [ "topic", "sort_by", "order"],
+    "exampleResponse": {
+      "articles": [
+        {
+          "title": "Seafood substitutions are increasing",
+          "topic": "cooking",
+          "author": "weegembump",
+          "body": "Text from the article..",
+          "created_at": 1527695953341,
+          "comment_count": 2
+        }
+      ]
+    }
+  },
+  "GET /api/articles/:article_id": {
+    "description": "serves an array of articles for a specific id",
+    "queries": [],
     "exampleResponse": {
       "articles": [
         {
@@ -23,5 +39,65 @@
         }
       ]
     }
-  }
+  },
+  "GET /api/articles/:article_id/comments": {
+    "description": "serves an array of all comments for specific article id",
+    "queries": [],
+    "exampleResponse": {
+      "comments": [
+        {
+          "body": "Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works.",
+         " votes": 100,
+          "author": "icellusedkars",
+          "article_id": 1,
+          "created_at": 1583025180000
+        }
+      ]
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "updates votes when given specific article id",
+    "queries": [],
+    "exampleRequest": {"inc_votes":20},
+    "exampleResponse": {
+      "comments": [
+        {
+          "body": "The 'umami' craze has turned a much-maligned and misunderstood food additive into an object of obsession for the world’s most innovative chefs. But secret ingredient monosodium glutamate’s biggest secret may be that there was never anything wrong with it at all.",
+         " votes": 47,
+          "author": "grumpy19",
+          "article_id": 34,
+          "created_at": 1483035180000
+        }
+      ]
+    }
+  },
+  "GET /api/users": {
+    "description": "serves an array of all users",
+    "queries": [],
+    "exampleResponse": {
+      "users": [{
+        "username": "'tickle122'",
+        "name": "'Tom Tickle'",
+        "avatar_url": "'https://vignette.wikia.nocookie.net/mrmen/images/d/d6/Mr-Tickle-9a.png/revision/latest?cb=20180127221953'"
+      }]
+    }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "inserts new comments to an article",
+    "queries": [],
+    "exampleRequest": {
+      "username": "jessjelly",
+      "body": "Hello world"
+    },
+      "exampleResponse": {
+        "comment": {
+          "body": "Hellow world"
+        }
+      }
+    },
+    "DELETE /api/comments/:comment_id": {
+      "description": "deletes comment for specific comment id",
+      "queries": [],
+      "exampleResponse":{}
+    }
 }

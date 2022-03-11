@@ -34,7 +34,7 @@ exports.insertCommentByArticleId = (article_id, username, body) => {
   const queryStr = format(sqlStr, queryValues);
 
   return db.query(queryStr).then((results) => {
-    console.log(results.rows[0])
+    console.log("problem",results.rows[0])
     return results.rows[0];
   });
 };
