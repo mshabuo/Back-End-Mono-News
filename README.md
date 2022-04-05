@@ -36,7 +36,10 @@ DELETE /api/articles/:articleId/comments - deletes a comments object relating to
 
 - Install dependencies by running the following command:
 
-`npm i`
+```
+npm i
+
+```
 
 (This should install all dependencies needed e.g. jest, supertest, dotenv etc)
 
@@ -68,14 +71,24 @@ DELETE /api/articles/:articleId/comments - deletes a comments object relating to
 
 - Next: start the server and seed the database by running this command:
 
-`npm run setup-dbs`
-`npm run seed`
+```
+npm run setup-dbs
+
+```
+
+```
+npm run seed
+
+```
 
 **test files are located in the tests folder.**
 
 - When testing, type the following command (from the directory containing this folder) in to your terminal:
 
-`npm test`
+```
+npm test
+
+```
 
 - This should perform all the tests included in this folder
 
