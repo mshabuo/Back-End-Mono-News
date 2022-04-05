@@ -23,7 +23,6 @@ app.post('/api/articles', postArticle)
 app.post('/api/articles/:article_id/comments', postCommentByArticleId)
 
 
-
 app.all("/*", (req, res)=>{
     res.status(404).send({msg: 'opps, path not found'})
 })

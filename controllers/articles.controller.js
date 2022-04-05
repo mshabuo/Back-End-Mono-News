@@ -1,8 +1,4 @@
-const { response } = require("express")
 const { selectArticleById, updateArticleById, getArticleByQuery, insertCommentByArticleId, insertArticle } = require("../models/articles.model")
-
-
-const {} = require('../models/articles.model')
 
 exports.postCommentByArticleId = (req, res, next) => {
   const { article_id } = req.params;
@@ -13,7 +9,6 @@ exports.postCommentByArticleId = (req, res, next) => {
     })
     .catch((err) => next(err));
 };
-
 
 exports.postArticle = (req, res, next) => {
   const { author, title, body, topic } = req.body;

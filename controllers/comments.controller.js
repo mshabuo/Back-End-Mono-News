@@ -1,6 +1,4 @@
-const { response } = require("express")
 const {removeCommentById, selectCommentsByArticleId, postComment} = require("../models/comments.model")
-
 
 exports.deleteComment = (req, res, next) => {
   const {comment_id: id} = req.params
@@ -28,7 +26,6 @@ exports.fetchCommentsByArticleId = (req, res, next) => {
 exports.postCommentByArticleId = (req, res, next) => {
   const { article_id } = req.params;
   postComment(article_id, req.body).then((comment) => {
-      console.log("controller", comment)
       return res.status(201).send({comment});
     })
     .catch((err) => next(err));
