@@ -6,6 +6,8 @@ The hosted version of the app can be found at: [http://mononews.herokuapp.com/ap
 
 The above hosted link describes the base URL for all the available **endpoints** below. You can access relative information by starting any URL with '/api'
 
+---
+
 # URL Endpoints
 
 /api/topics - serves an array of all topics
@@ -22,6 +24,8 @@ POST /api/articles/:articleId/comments - posts a comments object relating to an 
 DELETE Endpoint:
 DELETE /api/articles/:articleId/comments - deletes a comments object relating to an article when provided a valid comment ID
 
+---
+
 # Setup instructions:
 
 - First: set up and move in to a new directory
@@ -32,7 +36,7 @@ DELETE /api/articles/:articleId/comments - deletes a comments object relating to
 
 - Install dependencies by running the following command:
 
-> npm i
+`npm i`
 
 (This should install all dependencies needed e.g. jest, supertest, dotenv etc)
 
@@ -64,19 +68,22 @@ DELETE /api/articles/:articleId/comments - deletes a comments object relating to
 
 - Next: start the server and seed the database by running this command:
 
-> npm run setup-dbs
-> npm run seed
-> test files are located in the tests folder.
+`npm run setup-dbs`
+`npm run seed`
+
+**test files are located in the tests folder.**
 
 - When testing, type the following command (from the directory containing this folder) in to your terminal:
 
-  > npm t
+`npm test`
 
 - This should perform all the tests included in this folder
+
+---
 
 # Version requirements
 
 - This project was created using:
 
-(PostgreSQL) 14.1
-Node.js v15.14.0
+1. (PostgreSQL) 14.1
+2. Node.js v15.14.0
